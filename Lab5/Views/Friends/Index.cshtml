@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Lab5.Models.Friend>
+
+@{
+    ViewBag.Title = "Friends List";
+}
+
+<h2>Index</h2>
+
+@if (User.IsInRole("Administrator"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+
+<table class="table" id="friendsTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MestoZiveenje)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MestoZiveenje)
+                </td>
+                <td>
+                    @if (!User.IsInRole("User"))
+                    {
+                        <button class="btn btn-default" onclick="location.href='@Url.Action("Edit", "Friends", new { id = item.Id })'"> Edit </button>
+                        <br />
+                        <button data-id="@item.Id" class="js js-delete btn btn-danger" onclick="location.href='@Url.Action("Delete", "Friends", new { id = item.Id })'">Delete</button>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#friendsTable").DataTable();
+            @*
+            $(".js-delete").on("click", function () {
+                var button = $(this);
+                bootbox.confirm("Dali ste sigurni deka sakate da go izbrishete zapisot? ", function (rezultat) {
+                    if (rezultat) {
+                        $.ajax({
+                            url: "/Friends/Delete/" + button.attr("data-id"),
+                            method: "GET",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        })
+                    }
+                });
+            }); *@
+        });
+
+    </script>
+    }
